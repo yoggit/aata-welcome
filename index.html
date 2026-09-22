@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aata — keep the score for any game</title>
+<meta name="description" content="Aata is a scoresheet for any card or board game. Players across, rounds down, totals as you type, and it knows which way each game is won — lowest total for Rummy, highest for Uno. No account, no sign-in, works with no signal, and the game never leaves your device.">
+<meta name="theme-color" content="#f7f2e7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1426" media="(prefers-color-scheme: dark)">
+<meta property="og:title" content="Aata — keep the score for any game">
+<meta property="og:description" content="A scoresheet for any card or board game. It knows which way each game is won. No sign-in, works offline, and nothing leaves your device.">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/png" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<style>
+  /* Palette lifted from the APP's own tokens, so the page matches the thing it advertises. Aata is
+     the one app in the family designed LIGHT first — navy, orange and cream, straight from its icon
+     — so the light block is the base here and dark is the variant, the reverse of its siblings.
+     --gold is #96631A by family convention: the apps' brighter gold fails contrast on white. */
+  :root{
+    --bg:#f7f2e7; --card:#fffcf5; --ink:#1b2340; --muted:#5b6277; --line:#e6dcc6;
+    --navy:#1f2b4d; --hot:#e8743b; --hot-soft:#fde8da; --green:#22b573; --gold:#96631A;
+    --accent-fill:#1f2b4d; --accent-ink:#ffffff;
+    --soft:rgba(24,24,64,.045); --shadow:rgba(30,40,90,.10);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0f1426; --card:#18203a; --ink:#edf0f7; --muted:#a3aac0; --line:#2b3556;
+      --navy:#0b1122; --hot:#ffab73; --hot-soft:#3a2b24; --green:#5fe0a6; --gold:#e3b84f;
+      --accent-fill:#e8743b; --accent-ink:#1a0f06;
+      --soft:rgba(255,255,255,.05); --shadow:rgba(0,0,0,.45);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0f1426; --card:#18203a; --ink:#edf0f7; --muted:#a3aac0; --line:#2b3556;
+    --navy:#0b1122; --hot:#ffab73; --hot-soft:#3a2b24; --green:#5fe0a6; --gold:#e3b84f;
+    --accent-fill:#e8743b; --accent-ink:#1a0f06;
+    --soft:rgba(255,255,255,.05); --shadow:rgba(0,0,0,.45);
+    color-scheme: dark;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; background:var(--bg); }
+  body{ margin:0; color:var(--ink); background:var(--bg); line-height:1.55;
+        font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans Kannada",sans-serif; }
+  .wrap{ width:min(1040px, calc(100% - 40px)); margin:0 auto; }
+  a{ color:var(--gold); }
+
+  .topbar{ position:sticky; top:0; z-index:20; backdrop-filter:blur(10px);
+           background:color-mix(in srgb, var(--bg) 88%, transparent); border-bottom:1px solid var(--line); }
+  .topbar .row{ display:flex; align-items:center; justify-content:space-between; gap:14px; padding:12px 0; }
+  .brand{ display:flex; align-items:center; gap:10px; min-width:0; text-decoration:none; color:inherit; }
+  .brand img{ width:38px; height:38px; border-radius:10px; flex:none; }
+  .brand b{ font-size:1.2rem; letter-spacing:.02em; }
+  .brand .kn{ color:var(--hot); font-weight:600; }
+  .tools{ display:flex; align-items:center; gap:10px; }
+  .tbtn{ border:1px solid var(--line); background:transparent; color:var(--ink); cursor:pointer;
+         width:40px; height:40px; border-radius:11px; font-size:17px; line-height:1; }
+  .tbtn:hover{ border-color:var(--hot); }
+  .btn{ display:inline-flex; align-items:center; gap:.4em; text-decoration:none; font-weight:700;
+        border-radius:12px; padding:11px 18px; border:1px solid transparent; }
+  .btn-primary{ background:var(--accent-fill); color:var(--accent-ink); }
+  .btn-primary:hover{ filter:brightness(1.08); }
+  .btn-quiet{ border-color:var(--line); color:var(--ink); }
+  .btn:focus-visible, .tbtn:focus-visible{ outline:3px solid var(--hot); outline-offset:2px; }
+
+  .hero{ padding:56px 0 36px; display:grid; gap:26px; grid-template-columns:1.15fr .85fr; align-items:center; }
+  .hero h1{ font-size:clamp(2rem, 5vw, 3.1rem); line-height:1.08; margin:.1em 0 .35em; letter-spacing:-.02em; }
+  .hero p.lead{ font-size:1.12rem; color:var(--muted); margin:0 0 1.4em; max-width:34ch; }
+  .pron{ display:flex; align-items:center; gap:9px; flex-wrap:wrap; margin:0 0 .3em; font-size:.95rem; }
+  .pron .say{ color:var(--hot); font-weight:700; }
+  .pron .gloss{ color:var(--muted); }
+  .cta{ display:flex; gap:10px; flex-wrap:wrap; }
+  .shot{ border-radius:20px; border:1px solid var(--line); background:var(--card);
+         box-shadow:0 18px 48px var(--shadow); overflow:hidden; }
+  .shot img{ display:block; width:100%; height:auto; }
+
+  section{ padding:34px 0; border-top:1px solid var(--line); }
+  h2{ font-size:1.5rem; margin:0 0 .2em; letter-spacing:-.01em; }
+  .sub{ color:var(--muted); margin:0 0 1.2em; max-width:62ch; }
+  .grid{ display:grid; gap:14px; grid-template-columns:repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }
+  .card{ background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px;
+         box-shadow:0 1px 2px var(--shadow); }
+  .card h3{ margin:.1em 0 .3em; font-size:1.05rem; }
+  .card p{ margin:0; color:var(--muted); font-size:.95rem; }
+  .emoji{ font-size:1.5rem; line-height:1; }
+
+  .games{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chip{ border:1px solid var(--line); background:var(--card); border-radius:999px;
+         padding:.45rem .85rem; font-weight:600; font-size:.93rem; }
+  .chip.own{ border-color:var(--hot); color:var(--hot); }
+
+  .rules{ display:grid; gap:12px; grid-template-columns:repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); }
+  .rule{ border-left:4px solid var(--hot); padding:2px 0 2px 14px; }
+  .rule b{ display:block; }
+  .rule span{ color:var(--muted); font-size:.95rem; }
+
+  footer{ border-top:1px solid var(--line); padding:26px 0 40px; color:var(--muted); font-size:.9rem; }
+  footer .disc{ margin-top:.5em; }
+  footer .fam{ margin-top:.5em; }
+
+  @media (max-width:760px){ .hero{ grid-template-columns:1fr; padding-top:34px; } }
+  @media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap row">
+    <a class="brand" href="./">
+      <img src="icon.png" alt="">
+      <b>Aata</b> <span class="kn" lang="kn">ಆಟ</span>
+    </a>
+    <div class="tools">
+      <button class="tbtn" id="themeToggle" type="button" aria-label="Switch light or dark theme" title="Switch theme">◐</button>
+      <a class="btn btn-primary" href="https://aata.web.app">Open Aata →</a>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <div class="hero">
+    <div>
+      <!-- The respelling is checked against alar.ink, not guessed. -->
+      <p class="pron"><b>Aata</b> <span class="say">aa·ta</span>
+        <span class="gloss">Kannada for play, or a game</span></p>
+      <h1>Keep the score for any game.</h1>
+      <p class="lead">Players across, rounds down, totals as you type — and it knows which way
+        each game is won, so 20 is winning at Poker and losing at Rummy.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="https://aata.web.app">Open Aata →</a>
+        <a class="btn btn-quiet" href="#games">See the games</a>
+      </div>
+    </div>
+    <div class="shot"><img src="shot.png" alt="Aata's scoresheet on a phone: three players across the top, rounds down the side, running totals, and a scoreboard showing who leads."></div>
+  </div>
+
+  <section>
+    <h2>No account. No signal needed.</h2>
+    <p class="sub">Open it and start scoring. There is nothing to sign up for, nothing to install,
+      and nothing that stops working on a train.</p>
+    <div class="grid">
+      <div class="card"><div class="emoji">🔒</div><h3>It stays on your phone</h3>
+        <p>The game is kept in your own browser. It is never sent anywhere — there is no server
+          that could receive it, no account, no analytics and no advertising.</p></div>
+      <div class="card"><div class="emoji">✈️</div><h3>Works offline</h3>
+        <p>Add it to your home screen and it opens like an app, with or without a connection.
+          Kitchen tables and long journeys were the point.</p></div>
+      <div class="card"><div class="emoji">🏆</div><h3>It knows who won</h3>
+        <p>Lowest total, highest total, a target that ends the game, a score that knocks a player
+          out — it works the winner out and says which rule decided it.</p></div>
+    </div>
+  </section>
+
+  <section id="games">
+    <h2>Games it already knows</h2>
+    <p class="sub">Pick one and the rules are set for you. Every number is yours to change before
+      you start, because tables disagree — and anything not on the list is what
+      <b>Something else</b> is for.</p>
+    <div class="games">
+      <span class="chip">Rummy · pool 101</span><span class="chip">Rummy · pool 201</span>
+      <span class="chip">Gin rummy</span><span class="chip">Hearts</span><span class="chip">Spades</span>
+      <span class="chip">Euchre</span><span class="chip">Canasta</span><span class="chip">Cribbage</span>
+      <span class="chip">Golf</span><span class="chip">Judgement · kachuful</span>
+      <span class="chip">28 · 29</span><span class="chip">Teen patti</span><span class="chip">Poker</span>
+      <span class="chip">Uno</span><span class="chip">Yahtzee</span><span class="chip">Farkle</span>
+      <span class="chip">Scrabble</span><span class="chip">Carrom</span>
+      <span class="chip">Dominoes · Mexican train</span>
+      <span class="chip own">Something else</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>How it keeps score</h2>
+    <p class="sub">A game does not need a rulebook to be scored. It needs three facts.</p>
+    <div class="rules">
+      <div class="rule"><b>Which way it runs</b>
+        <span>The lowest total wins, or the highest. It is on screen the whole time, so nobody
+          argues about it at the end.</span></div>
+      <div class="rule"><b>A score that ends it</b>
+        <span>First to 500 takes Uno; somebody reaching 100 ends Hearts, and that person has
+          almost certainly lost.</span></div>
+      <div class="rule"><b>A score that knocks you out</b>
+        <span>Pool Rummy at 101: you are out, and the last player left wins.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Small things that matter at a table</h2>
+    <div class="grid">
+      <div class="card"><h3>An empty box is not a nought</h3>
+        <p>A player nobody has scored yet is not winning a lowest-wins game. Aata says whose score
+          is missing instead of crowning them.</p></div>
+      <div class="card"><h3>Fix round three</h3>
+        <p>Every score can be corrected, every round deleted, every player renamed — and the
+          totals are worked out again.</p></div>
+      <div class="card"><h3>Minus scores</h3>
+        <p>Hearts and some Rummy variants go below zero, and a phone's number pad has no minus
+          key — so there is a button for it.</p></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>© <span id="yr">2026</span> yoggit · Aata · <a href="license.html">Licence</a></div>
+    <div class="disc">Free and ad-free. No account, no tracking, no analytics. The game you are
+      scoring stays in your own browser on your own device.</div>
+    <div class="fam">Part of a small family of apps built independently.</div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+  // Light/dark toggle. KEY is shared with the hub and the sibling landing pages — they are all one
+  // origin (yoggit.github.io), so a visitor's choice follows them across the family.
+  (function(){
+    var root = document.documentElement, KEY = 'apps-theme';
+    var btn = document.getElementById('themeToggle');
+    try{ var saved = localStorage.getItem(KEY);
+         if (saved === 'light' || saved === 'dark') root.setAttribute('data-theme', saved); }catch(e){}
+    btn.addEventListener('click', function(){
+      var cur = root.getAttribute('data-theme');
+      if(!cur) cur = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      var next = cur === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try{ localStorage.setItem(KEY, next); }catch(e){}
+    });
+  })();
+</script>
+
+</body>
+</html>
