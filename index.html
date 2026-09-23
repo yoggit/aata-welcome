@@ -72,6 +72,14 @@
   .pron{ display:flex; align-items:center; gap:9px; flex-wrap:wrap; margin:0 0 .3em; font-size:.95rem; }
   .pron .say{ color:var(--hot); font-weight:700; }
   .pron .gloss{ color:var(--muted); }
+  /* 🔴 The speaker the rest of the family has. It was missing here — the respelling was on the page
+     with no way to hear it, which is the one thing a respelling is for. */
+  .pron-btn{ display:inline-grid; place-items:center; width:26px; height:26px; padding:0; flex:none;
+             border:1px solid var(--line); border-radius:50%; background:var(--card);
+             color:var(--muted); cursor:pointer; }
+  .pron-btn:hover, .pron-btn.saying{ color:var(--hot); border-color:var(--hot); }
+  .pron-btn:focus-visible{ outline:3px solid var(--hot); outline-offset:2px; }
+  .pron-btn svg{ width:15px; height:15px; display:block; }
   .cta{ display:flex; gap:10px; flex-wrap:wrap; }
   .shot{ border-radius:20px; border:1px solid var(--line); background:var(--card);
          box-shadow:0 18px 48px var(--shadow); overflow:hidden; }
@@ -125,7 +133,7 @@
   <div class="hero">
     <div>
       <!-- The respelling is checked against alar.ink, not guessed. -->
-      <p class="pron"><b>Aata</b> <span class="say">aa·ta</span>
+      <p class="pron"><b>Aata</b> <span class="say">aa·ta</span><button class="pron-btn" id="pronBtn" type="button" hidden aria-label="Hear how to say Aata"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17.5 8.5a5 5 0 0 1 0 7"/><path d="M20 6a9 9 0 0 1 0 12"/></svg></button>
         <span class="gloss">Kannada for play, or a game</span></p>
       <h1>Keep the score for any game.</h1>
       <p class="lead">Players across, rounds down, totals as you type — and it knows which way
@@ -259,5 +267,33 @@
   })();
 </script>
 
+<script>
+  /* Pronunciation speaker. Same policy as the apps and the other landing pages: a Kannada voice
+     reading the Kannada script, or Indian English reading the respelling, or NO BUTTON AT ALL —
+     never some other accent guessing at it. Voices load async, hence the event. */
+  (function(){
+    var btn = document.getElementById("pronBtn");
+    if(!btn || !window.speechSynthesis) return;
+    var KN = "\u0c86\u0c9f", SAY = "aa\u00b7ta";
+    function pick(){
+      var v = speechSynthesis.getVoices() || [];
+      for(var i=0;i<v.length;i++) if(v[i].lang && v[i].lang.indexOf("kn") === 0) return {v:v[i], kn:true};
+      for(var j=0;j<v.length;j++) if(v[j].lang === "en-IN" || v[j].lang === "en_IN") return {v:v[j], kn:false};
+      return null;
+    }
+    function sync(){ btn.hidden = !pick(); }
+    sync();
+    speechSynthesis.addEventListener && speechSynthesis.addEventListener("voiceschanged", sync);
+    btn.addEventListener("click", function(){
+      var got = pick(); if(!got) return;
+      speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(got.kn ? KN : SAY.replace(/\u00b7/g, " "));
+      u.voice = got.v; u.lang = got.v.lang; u.rate = 0.85;
+      btn.classList.add("saying");
+      u.onend = u.onerror = function(){ btn.classList.remove("saying"); };
+      speechSynthesis.speak(u);
+    });
+  })();
+</script>
 </body>
 </html>
