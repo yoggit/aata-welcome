@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Aata — keep the score for any game</title>
-<meta name="description" content="Aata is a scoresheet for any card or board game. Players across, rounds down, totals as you type, and it knows which way each game is won — lowest total for Rummy, highest for Uno. It also plays chowka bara (ashta chamma) on a 5×5 or 7×7 board. No account, no sign-in, works with no signal, and the game never leaves your device.">
+<meta name="description" content="Aata is a scoresheet for any card or board game that knows which way each game is won — lowest total for Rummy, highest for Uno. It also plays chowka bara (ashta chamma) on a 5×5 or 7×7 board, and runs planning poker for a team, everyone on their own phone. No account and no sign-in; the scoresheet and the board work with no signal and never leave your device.">
 <meta name="theme-color" content="#f7f2e7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0f1426" media="(prefers-color-scheme: dark)">
 <meta property="og:title" content="Aata — keep the score for any game">
-<meta property="og:description" content="A scoresheet for any card or board game, and a board to play chowka bara on. It knows which way each game is won. No sign-in, works offline, and nothing leaves your device.">
+<meta property="og:description" content="A scoresheet for any card or board game, a board to play chowka bara on, and planning poker for your team. No account, no sign-in.">
 <meta property="og:type" content="website">
 <link rel="icon" type="image/png" href="icon.png">
 <link rel="apple-touch-icon" href="icon.png">
@@ -136,28 +136,31 @@
       <p class="pron"><b>Aata</b> <span class="say">aa·ta</span><button class="pron-btn" id="pronBtn" type="button" hidden aria-label="Hear how to say Aata"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17.5 8.5a5 5 0 0 1 0 7"/><path d="M20 6a9 9 0 0 1 0 12"/></svg></button>
         <span class="gloss">Kannada for play, or a game</span></p>
       <h1>Keep the score for any game.</h1>
-      <p class="lead">Players across, rounds down, totals as you type — and it knows which way
-        each game is won, so 20 is winning at Poker and losing at Rummy. There is a board to
-        play on too: <b>chowka bara</b>, on a 5×5 or a 7×7.</p>
+      <p class="lead">Round by round, totals as you type — and it knows which way each game is
+        won, so 20 is winning at Poker and losing at Rummy. There is a board to play on too,
+        <b>chowka bara</b>, and <b>planning poker</b> for sizing work as a team.</p>
       <div class="cta">
         <a class="btn btn-primary" href="https://aata.web.app">Open Aata →</a>
         <a class="btn btn-quiet" href="#games">See the games</a>
       </div>
     </div>
-    <div class="shot"><img src="shot.png" alt="Aata's scoresheet on a phone: three players across the top, rounds down the side, running totals, and a scoreboard showing who leads."></div>
+    <div class="shot"><img src="shot.png" alt="Aata's scoresheet on a phone: a scoreboard with Cy leading, and the card for round 3 listing Ann, Bob and Cy, each with this round's score and their running total. The first two rounds are folded away underneath."></div>
   </div>
 
   <section>
     <h2>No account. No signal needed.</h2>
     <p class="sub">Open it and start scoring. There is nothing to sign up for, nothing to install,
       and nothing that stops working on a train.</p>
+    <!-- 🔴 SAID PER MODE. The scoresheet and the board send nothing anywhere; a planning poker room
+         is shared through a server. A blanket "nothing leaves your device" stopped being true the
+         day poker went live — the app's own footer changed the same way. -->
     <div class="grid">
-      <div class="card"><div class="emoji">🔒</div><h3>It stays on your phone</h3>
-        <p>The game is kept in your own browser. It is never sent anywhere — there is no server
-          that could receive it, no account, no analytics and no advertising.</p></div>
+      <div class="card"><div class="emoji">🔒</div><h3>Scores stay on your phone</h3>
+        <p>The scoresheet and the chowka bara board are kept in your own browser and never sent
+          anywhere. No account, no analytics and no advertising.</p></div>
       <div class="card"><div class="emoji">✈️</div><h3>Works offline</h3>
-        <p>Add it to your home screen and it opens like an app, with or without a connection.
-          Kitchen tables and long journeys were the point.</p></div>
+        <p>Add it to your home screen and it opens like an app. Scores and the board work with or
+          without a connection — planning poker needs one, being a room shared between phones.</p></div>
       <div class="card"><div class="emoji">🏆</div><h3>It knows who won</h3>
         <p>Lowest total, highest total, a target that ends the game, a score that knocks a player
           out — it works the winner out and says which rule decided it.</p></div>
@@ -185,25 +188,51 @@
   <!-- The second mode: a game you play on the screen, not one you keep the score of. -->
   <section id="chowka">
     <h2>And a board to play on: chowka bara</h2>
-    <p class="sub">Also called <b>ashta chamma</b> and <b>daayam</b>. Cowrie shells and four pawns
-      each: anticlockwise once round the outside, then inward — and every loop inside runs the other
-      way, clockwise, to the centre. On the 5×5 board with four shells, or the 7×7 with six. No
-      pieces to lose under the sofa.</p>
+    <p class="sub">Also called <b>ashta chamma</b> and <b>daayam</b>. Cowrie shells, and pawns that
+      go anticlockwise round the outside, then inward — every loop inside runs the other way,
+      clockwise, to the centre. The 5×5 board has four shells and four pawns each; the 7×7 has six
+      of both. No pieces to lose under the sofa.</p>
     <div class="hero">
       <div class="rules">
         <div class="rule"><b>The shells decide</b>
           <span>How many land mouth-up is how far you go — and none face-up is the big one, worth
             eight on the small board and twelve on the large. Four and eight earn another turn.</span></div>
         <div class="rule"><b>You choose the pawn</b>
-          <span>Every turn shows all four of yours: the ones that can go, and why the others
-            cannot. Aata counts the steps and keeps the rules. Which pawn to move is your
-            argument, not its decision.</span></div>
+          <span>Every turn shows all of yours: the ones that can go, and why the others cannot.
+            Aata counts the steps and keeps the rules. Which pawn to move is your argument, not
+            its decision.</span></div>
         <div class="rule"><b>It knows the awkward rules</b>
-          <span>A crossed square is safe. Nobody goes into the inner loop until they have sent
-            somebody home. And the centre has to be landed on exactly — a pawn one short waits
-            for its one.</span></div>
+          <span>A crossed square is safe, and the only place two of your own pawns may share.
+            Nobody goes into the inner loop until they have sent somebody home. And the centre has
+            to be landed on exactly — a pawn one short waits for its one.</span></div>
       </div>
       <div class="shot"><img src="board.png" alt="A game of chowka bara: a five by five board with crossed safe squares, orange and green pawns on it, and a line saying Asha threw 3 — choose a pawn."></div>
+    </div>
+  </section>
+
+  <!-- The third mode: for a team at work, not a table at home. -->
+  <section id="poker">
+    <h2>And planning poker, for the team</h2>
+    <p class="sub">Size stories together, everyone on their own phone. Whoever starts a room is the
+      moderator: they share a six-character code or a link, and the team joins with nothing but a
+      name — no accounts, nothing to install.</p>
+    <div class="hero">
+      <div class="rules">
+        <div class="rule"><b>Face down until the reveal</b>
+          <span>Nobody sees a card before the moderator turns them over — not even the moderator.
+            That is enforced by the server's own rules, not merely left out of the page.</span></div>
+        <div class="rule"><b>Fibonacci or T-shirt sizes</b>
+          <span>0, ½, 1, 2, 3, 5, 8, 13, 20, 40, 100 — or XS to XL. A question mark for "not sure",
+            and a cup for "we need a break".</span></div>
+        <div class="rule"><b>What it came to</b>
+          <span>The spread, the average, who played what — and each story's result kept for the rest
+            of the session. Vote again, or move to the next story.</span></div>
+        <div class="rule"><b>Gone when you are done</b>
+          <span>The room is shared through Google's Firebase: the names, the cards and the story
+            titles, under a random id with no account behind it. Ending the session deletes all of
+            it. A room nobody ends stops opening after a day.</span></div>
+      </div>
+      <div class="shot"><img src="poker.png" alt="A planning poker room on a phone: the story Sign-up form, the room code and link, four people with their cards turned over — 5, 8, 8 and 13 — and the result: 5 to 13, average 8.5."></div>
     </div>
   </section>
 
@@ -234,6 +263,12 @@
       <div class="card"><h3>Minus scores</h3>
         <p>Hearts and some Rummy variants go below zero, and a phone's number pad has no minus
           key — so there is a button for it.</p></div>
+      <div class="card"><h3>Any number of players</h3>
+        <p>Players go down the card, not across it, so a seventh player is one more row — never a
+          scoresheet you scroll sideways to read.</p></div>
+      <div class="card"><h3>A fanfare for the winner</h3>
+        <p>A sound when a game ends, a pawn gets home, or somebody is sent back to start. One tap
+          turns them off, and your phone remembers.</p></div>
     </div>
   </section>
 
@@ -242,8 +277,10 @@
 <footer>
   <div class="wrap">
     <div>© <span id="yr">2026</span> yoggit · Aata · <a href="license.html">Licence</a></div>
-    <div class="disc">Free and ad-free. No account, no tracking, no analytics. The game you are
-      scoring stays in your own browser on your own device.</div>
+    <div class="disc">Free and ad-free. No account, no tracking, no analytics. The scoresheet and
+      the board stay in your own browser on your own device; a planning poker room is shared
+      through Firebase and deleted when the session ends — see Aata's
+      <a href="https://aata.web.app/privacy.html">privacy page</a>.</div>
     <div class="fam">Part of a small family of apps built independently.</div>
   </div>
 </footer>

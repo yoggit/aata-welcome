@@ -1,6 +1,7 @@
 # Aata — the page that introduces it
 
-The public landing page for **Aata**, the scoresheet for any card or board game.
+The public landing page for **Aata**: the scoresheet for any card or board game, chowka bara
+to play on a 5×5 or 7×7 board, and planning poker for a team.
 
 - The page: **https://yoggit.github.io/aata-welcome/**
 - The app itself: **https://aata.web.app**
